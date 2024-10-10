@@ -55,7 +55,9 @@ const Signup = () => {
             dob,
         };
 
-        if (role === "teacher") userData.salary = salary;
+        if (role === "teacher") {
+            userData.salary = salary;
+        }
 
         try {
             // Signup the user

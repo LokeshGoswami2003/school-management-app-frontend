@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Profile from "./Profile"; // Import Profile component
 import Classes from "./Classes"; // Import other components as needed
 import { useUser } from "../contexts/UserContext";

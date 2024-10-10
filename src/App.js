@@ -1,3 +1,4 @@
+import React from "react";
 import {
     createBrowserRouter,
     RouterProvider,
@@ -7,16 +8,28 @@ import {
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import { UserProvider } from "./contexts/UserContext";
+import { UserProvider, useUser } from "./contexts/UserContext"; // Import UserProvider and useUser
 
 const RootLayout = () => {
     return (
         <div>
-            <Outlet />
+            <Outlet /> {/* Used for nested routes */}
         </div>
     );
 };
 
+// Protected route component to ensure only authenticated users can access certain routes
+const ProtectedRoute = ({ children }) => {
+    const { user } = useUser(); // Access user data from context
+
+    if (!user) {
+        return <Navigate to="/login" replace />; // Redirect to login if no user
+    }
+
+    return children;
+};
+
+// Define your routes using React Router
 const router = createBrowserRouter([
     {
         path: "/",
@@ -24,14 +37,17 @@ const router = createBrowserRouter([
         children: [
             { path: "signup", element: <Signup /> },
             { path: "login", element: <Login /> },
-            { path: "home", element: <Home /> },
             {
-                path: "*", // Catch all routes and redirect to login
-                element: <Navigate to="/login" replace />,
+                path: "home",
+                element: (
+                    <ProtectedRoute>
+                        <Home />
+                    </ProtectedRoute>
+                ), // Protect the home route
             },
             {
-                path: "/", // Default route
-                element: <Navigate to="/login" replace />, // Always redirect to login
+                path: "/", // Default route, redirects to login
+                element: <Navigate to="/login" replace />,
             },
         ],
     },
@@ -40,7 +56,9 @@ const router = createBrowserRouter([
 function App() {
     return (
         <UserProvider>
-            <RouterProvider router={router} />
+            {" "}
+            {/* Wrap your app in UserProvider to provide user context */}
+            <RouterProvider router={router} /> {/* Set up router */}
         </UserProvider>
     );
 }

@@ -12,12 +12,10 @@ const Login = () => {
     const [popup, setPopup] = useState({ message: "", type: "" });
     const navigate = useNavigate(); // For redirection
 
-    // Close the popup
     const handleClosePopup = () => {
         setPopup({ message: "", type: "" });
     };
 
-    // Handle login form submission
     const handleLogin = async (e) => {
         e.preventDefault();
 
@@ -32,28 +30,28 @@ const Login = () => {
             );
 
             if (loginRes.status === 200) {
-                // Success case
+                // Store token in localStorage
                 localStorage.setItem(
                     "token",
                     loginRes?.data?.result?.accessToken
                 );
 
-                // Set user in context
-                setUser(loginRes.data.result.user);
+                // Set user in context and localStorage
+                const userData = loginRes.data.result.user;
+                setUser(userData); // Set user in context
+                localStorage.setItem("user", JSON.stringify(userData)); // Store user data in localStorage
 
-                // Show success popup
+                // Show success popup and redirect
                 setPopup({
                     message: "Login successful! Redirecting to home...",
                     type: "success",
                 });
 
-                // Redirect to home after showing success popup
                 setTimeout(() => {
-                    navigate("/home");
-                }, 2000); // 2 second delay for popup visibility
+                    navigate("/home"); // Redirect to home
+                }, 2000);
             }
         } catch (err) {
-            // Handle errors with a proper message
             const errorMessage =
                 err?.response?.data?.message ||
                 "Login failed! Please try again.";
@@ -69,7 +67,6 @@ const Login = () => {
             <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
 
-                {/* Show Popup if message exists */}
                 {popup.message && (
                     <Popup
                         message={popup.message}

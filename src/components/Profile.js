@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUser } from "../contexts/UserContext";
 import axios from "axios";
 import Popup from "./Popup"; // Assuming you already have a Popup component
@@ -15,7 +15,7 @@ const Profile = () => {
     const [gender, setGender] = useState(user.gender || "");
     const [schoolName, setSchoolName] = useState(user.schoolName || "");
     const [salary, setSalary] = useState(user.salary || "");
-    const [fees, setFees] = useState(user.fees || "");
+    const fees = user.fees;
     const userId = user._id;
 
     const handleClosePopup = () => {
@@ -166,21 +166,16 @@ const Profile = () => {
                     </div>
 
                     {/* School Name */}
-                    {user.userType !== "admin" && (
-                        <div>
-                            <label className="block text-gray-700 font-bold mb-2">
-                                School
-                            </label>
-                            <input
-                                type="text"
-                                value={schoolName}
-                                onChange={(e) => setSchoolName(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none bg-gray-100"
-                                placeholder="Enter your school name"
-                                required
-                            />
-                        </div>
-                    )}
+
+                    <div>
+                        <label className="block text-gray-700 font-bold mb-2">
+                            School
+                        </label>
+                        <p className="w-full px-4 py-2 border rounded-lg bg-gray-100">
+                            {schoolName ? schoolName : "No School"}{" "}
+                            {/* Display fees value or a default message */}
+                        </p>
+                    </div>
 
                     {/* Salary for Teacher */}
                     {user.userType === "teacher" && (
@@ -204,13 +199,10 @@ const Profile = () => {
                             <label className="block text-gray-700 font-bold mb-2">
                                 Fees
                             </label>
-                            <input
-                                type="number"
-                                value={fees}
-                                onChange={(e) => setFees(e.target.value)}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none bg-gray-100"
-                                placeholder="Enter your fees"
-                            />
+                            <p className="w-full px-4 py-2 border rounded-lg bg-gray-100">
+                                {fees ? fees : "Fees not available"}{" "}
+                                {/* Display fees value or a default message */}
+                            </p>
                         </div>
                     )}
 
