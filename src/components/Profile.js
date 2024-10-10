@@ -13,7 +13,7 @@ const Profile = () => {
     const [phone, setPhone] = useState(user.phone || "");
     const [dob, setDob] = useState(user.dob || "");
     const [gender, setGender] = useState(user.gender || "");
-    const [schoolName, setSchoolName] = useState(user.schoolName || "");
+    const schoolName = user.schoolName;
     const [salary, setSalary] = useState(user.salary || "");
     const fees = user.fees;
     const userId = user._id;

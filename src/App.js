@@ -8,28 +8,19 @@ import {
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import { UserProvider, useUser } from "./contexts/UserContext"; // Import UserProvider and useUser
+import Classes from "./components/Classes";
+import ClassDetail from "./components/ClassDetail"; // Import ClassDetail
+import { UserProvider } from "./contexts/UserContext";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const RootLayout = () => {
     return (
         <div>
-            <Outlet /> {/* Used for nested routes */}
+            <Outlet />
         </div>
     );
 };
 
-// Protected route component to ensure only authenticated users can access certain routes
-const ProtectedRoute = ({ children }) => {
-    const { user } = useUser(); // Access user data from context
-
-    if (!user) {
-        return <Navigate to="/login" replace />; // Redirect to login if no user
-    }
-
-    return children;
-};
-
-// Define your routes using React Router
 const router = createBrowserRouter([
     {
         path: "/",
@@ -39,15 +30,21 @@ const router = createBrowserRouter([
             { path: "login", element: <Login /> },
             {
                 path: "home",
-                element: (
-                    <ProtectedRoute>
-                        <Home />
-                    </ProtectedRoute>
-                ), // Protect the home route
+                element: <ProtectedRoute />, // Protected route for home
+                children: [{ path: "", element: <Home /> }],
             },
             {
-                path: "/", // Default route, redirects to login
-                element: <Navigate to="/login" replace />,
+                path: "classes", // Route for classes
+                element: <ProtectedRoute />,
+                children: [{ path: "", element: <Classes /> }],
+            },
+            {
+                path: "classes/:classId", // Route for class details
+                element: <ClassDetail />,
+            },
+            {
+                path: "/", // Default route if the user is not authenticated
+                element: <Navigate to="/login" />,
             },
         ],
     },
@@ -56,9 +53,7 @@ const router = createBrowserRouter([
 function App() {
     return (
         <UserProvider>
-            {" "}
-            {/* Wrap your app in UserProvider to provide user context */}
-            <RouterProvider router={router} /> {/* Set up router */}
+            <RouterProvider router={router} />
         </UserProvider>
     );
 }
