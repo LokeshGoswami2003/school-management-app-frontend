@@ -1,8 +1,13 @@
-import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import {
+    createBrowserRouter,
+    RouterProvider,
+    Outlet,
+    Navigate,
+} from "react-router-dom";
 import Signup from "./components/Signup";
 import Login from "./components/Login";
 import Home from "./components/Home";
-import ProtectedRoute from "./components/ProtectedRoute";
+import { UserProvider } from "./contexts/UserContext";
 
 const RootLayout = () => {
     return (
@@ -19,21 +24,25 @@ const router = createBrowserRouter([
         children: [
             { path: "signup", element: <Signup /> },
             { path: "login", element: <Login /> },
+            { path: "home", element: <Home /> },
             {
-                path: "home",
-                element: <ProtectedRoute />, // Protected route for home
-                children: [{ path: "", element: <Home /> }],
+                path: "*", // Catch all routes and redirect to login
+                element: <Navigate to="/login" replace />,
             },
             {
-                path: "/", // Default route if the user is not authenticated
-                element: <Navigate to="/login" />,
+                path: "/", // Default route
+                element: <Navigate to="/login" replace />, // Always redirect to login
             },
         ],
     },
 ]);
 
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <UserProvider>
+            <RouterProvider router={router} />
+        </UserProvider>
+    );
 }
 
 export default App;
